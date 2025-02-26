@@ -1,8 +1,10 @@
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
+    [SerializeField] private Transform tfCamera;
+    [SerializeField] private Transform pointCameraFollow;
 
     [SerializeField] float controlSpeed = 1.0f;
     [SerializeField] float xClampRange = 1.0f;
@@ -11,11 +13,24 @@ public class PlayerMovement : MonoBehaviour
     [SerializeField] float controlPitchFactor = 1.0f; // Rotate y
     [SerializeField] float controlYawFactor = 1.0f; // Rotate x
     [SerializeField] float rotationSpeed = 1.0f;
-    Vector2 movement; // x & y of Player
+    [SerializeField] float increaseSpeed = 30;
+
+    Vector2 movement;
+
+    float inputz;
+
+    float z;
 
   
     void Update()
     {
+        if(inputz != 0)
+        {
+            z += inputz * increaseSpeed * Time.deltaTime;
+        }
+
+        tfCamera.position = pointCameraFollow.position;
+
         ProcessTranslation();
         ProcessRotation();
     }
@@ -24,6 +39,10 @@ public class PlayerMovement : MonoBehaviour
         movement = value.Get<Vector2>();
     }
 
+    public void OnMove1(InputValue value)
+    {
+        inputz = value.Get<float>();
+    }
     void ProcessTranslation()
     {
         float xOffset = movement.x * controlSpeed * Time.deltaTime;
@@ -33,7 +52,8 @@ public class PlayerMovement : MonoBehaviour
         float yOffset = movement.y * controlSpeed * Time.deltaTime;
         float rawYPos = transform.localPosition.y + yOffset;
         float ClampedYPos = Mathf.Clamp(rawYPos, -yClampRange, yClampRange);
-        transform.localPosition = new Vector3(clampedXPos, ClampedYPos, 0f);
+
+        transform.localPosition = new Vector3(clampedXPos, ClampedYPos, z);
     }
 
     void ProcessRotation()
