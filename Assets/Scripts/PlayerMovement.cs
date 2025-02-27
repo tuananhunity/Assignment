@@ -3,9 +3,6 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [SerializeField] private Transform tfCamera;
-    [SerializeField] private Transform pointCameraFollow;
-
     [SerializeField] float controlSpeed = 1.0f;
     [SerializeField] float xClampRange = 1.0f;
     [SerializeField] float yClampRange = 1.0f;
@@ -28,8 +25,7 @@ public class PlayerMovement : MonoBehaviour
         {
             z += inputz * increaseSpeed * Time.deltaTime;
         }
-
-        tfCamera.position = pointCameraFollow.position;
+        
 
         ProcessTranslation();
         ProcessRotation();
